@@ -12,31 +12,25 @@ public class Tester {
 
     public static void createNewGrid(int numRowIntersections, int numColIntersections) {
         grid = new boolean[2 * numRowIntersections-1][2 * numColIntersections-1];
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                grid[i][j] = false;
+            }
+        }
     }
     public static void fillObstacles(int numObstacles) {
-        int numObstacleRows = (grid.length - 1) / 2;
-        int numObstacleCols = (grid[0].length - 1) / 2;
-
         for (int i = 0; i < numObstacles; i++) {
-
             boolean foundEmptySpace = false;
             while (!foundEmptySpace) {
-                int randomRow = (int) (Math.random() * numObstacleRows);
-                int randomRowIndex = randomRow * 2 + 1;
-                int randomCol = (int) (Math.random() * numObstacleCols);
-                int randomColIndex = randomCol * 2 + 1;
-                if (!grid[randomRowIndex][randomColIndex]) {
-                    grid[randomRowIndex][randomColIndex] = true;
+                int randomRow = (int) (Math.random() * grid.length);
+                int randomCol = (int) (Math.random() * grid[0].length);
+                int tempRowColSum = randomRow+randomCol;
+                if (tempRowColSum % 2 == 1 && !grid[randomRow][randomCol]) {
+                    grid[randomRow][randomCol] = true;
                     foundEmptySpace = true;
-                } else {
-                    continue;
                 }
             }
-
         }
-//       Get the number of obstacle rows and obstacle columns
-//       Pick a random row and a random column
-//       Check if the row and column one has been filled, if not, then fill it, otherwise, find a new one
     }
 
     public static int[] pickNextDirection(int currentRow, int currentCol, int targetRow, int targetCol) {
