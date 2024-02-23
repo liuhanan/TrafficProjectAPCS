@@ -209,6 +209,8 @@ public class Tester {
         }
 
     }
+
+//    Trying to test how to merge branches into the main branch.
     public static void main(String[] args) {
         ArrayList<Integer>[] arrayOfArrayLists = new ArrayList[desiredObstacleRange];
 //        runTestVisualization(targetRow, targetCol, 15, numRowIntersections, numColIntersections);
