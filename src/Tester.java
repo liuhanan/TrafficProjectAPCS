@@ -25,11 +25,13 @@ public class Tester {
         }
     }
     public static void fillObstacles(int numObstacles) {
+        int totalPositions = grid.length * grid[0].length;
         for (int i = 0; i < numObstacles; i++) {
             boolean foundEmptySpace = false;
             while (!foundEmptySpace) {
-                int randomRow = (int) (Math.random() * grid.length);
-                int randomCol = (int) (Math.random() * grid[0].length);
+                int position = (int) (Math.random()*(totalPositions));
+                int randomRow = (position) / grid[0].length;
+                int randomCol = (position) % grid[0].length;
                 int tempRowColSum = randomRow+randomCol;
                 if (tempRowColSum % 2 == 1 && !grid[randomRow][randomCol]) {
                     grid[randomRow][randomCol] = true;
@@ -203,11 +205,33 @@ public class Tester {
         maximum = arrayList.get(arrayList.size()-1);
         int middleIndex = arrayList.size() / 2;
         if (arrayList.size() % 2 == 0) {
-            median = (arrayList.get(middleIndex) + arrayList.get(middleIndex + 1)) / 2.0;
+            median = (arrayList.get(middleIndex) + arrayList.get(middleIndex - 1)) / 2.0;
+            if (arrayList.size() % 4 == 0) {
+                q1 = ((arrayList.get(middleIndex/2) + arrayList.get(middleIndex/2 - 1))) / 2.0;
+                q3 = ((arrayList.get((middleIndex+arrayList.size())/2) + arrayList.get((middleIndex+arrayList.size())/2)) / 2.0);
+            } else {
+                q1 = (arrayList.get(middleIndex/2));
+                q3 = (arrayList.get((middleIndex+arrayList.size())/2));
+            }
+
         } else {
             median = (arrayList.get(middleIndex));
+            if (arrayList.size() % 4 == 1) {
+                q1 = ((arrayList.get(middleIndex/2) + arrayList.get(middleIndex/2 - 1))) / 2.0;
+                q3 = ((arrayList.get((middleIndex+arrayList.size())/2) + arrayList.get((middleIndex+arrayList.size())/2)) / 2.0);
+            } else {
+                q1 = (arrayList.get(middleIndex/2));
+                q3 = (arrayList.get((middleIndex+arrayList.size())/2));
+            }
         }
 
+        System.out.println("The mean is " + mean);
+        System.out.println("The standard deviation is " + standardDeviation);
+        System.out.println("The minimum is " + minimum);
+        System.out.println("The Q1 is " + q1);
+        System.out.println("The median is " + median);
+        System.out.println("The Q3 is " + q3);
+        System.out.println("The maximum is " + maximum);
     }
 
 //    Trying to test how to merge branches into the main branch.
@@ -216,6 +240,11 @@ public class Tester {
 //        runTestVisualization(targetRow, targetCol, 15, numRowIntersections, numColIntersections);
         for (int numObstacles = 1; numObstacles <= desiredObstacleRange; numObstacles++) {
             arrayOfArrayLists[numObstacles-1] = runSimulation(numSimulations, targetRow, targetCol, numObstacles, numRowIntersections, numColIntersections);
+            System.out.println("=================================");
+            System.out.println();
+            System.out.println("The statistics for " + numObstacles + " are:");
+            System.out.println("----------------------------------");
+            getStatistics(arrayOfArrayLists[numObstacles-1]);
         }
     }
 }
