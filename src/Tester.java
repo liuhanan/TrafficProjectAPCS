@@ -4,9 +4,17 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Tester {
     static boolean[][] grid;
+    static int desiredObstacleRange = 15;
+    static int numSimulations = 10_000;
+    static int targetRow = 6;
+    static int targetCol = 5;
+    static int numRowIntersections = 6;
+    static int numColIntersections = 5;
+    static int maxSteps = 100;
 
     public static void createNewGrid(int numRowIntersections, int numColIntersections) {
         grid = new boolean[2 * numRowIntersections-1][2 * numColIntersections-1];
@@ -40,18 +48,20 @@ public class Tester {
 //        Checking Boundaries and Obstacles
         if(currentRow == 0  || grid[currentRow-1][currentCol]) {
             possibleMovesList.remove("Up");
-            System.out.println("Removed up");
-        } else if (currentRow == grid.length-1 || grid[currentRow+1][currentCol]) {
+//            System.out.println("Removed up");
+        }
+        if (currentRow == grid.length-1 || grid[currentRow+1][currentCol]) {
             possibleMovesList.remove("Down");
-            System.out.println("Removed Down");
+//            System.out.println("Removed Down");
         }
 
         if(currentCol == 0 || grid[currentRow][currentCol-1]) {
             possibleMovesList.remove("Left");
-            System.out.println("Removed Left");
-        } else if (currentCol == grid[0].length -1 || grid[currentRow][currentCol+1]) {
+//            System.out.println("Removed Left");
+        }
+        if (currentCol == grid[0].length -1 || grid[currentRow][currentCol+1]) {
             possibleMovesList.remove("Right");
-            System.out.println("Removed Right");
+//            System.out.println("Removed Right");
         }
 
         int minDistance = Integer.MAX_VALUE;
@@ -68,7 +78,7 @@ public class Tester {
             } else if (direction.equals("Left")) {
                 distance = Math.abs(targetCol-(currentCol-2)) + Math.abs(targetRow - (currentRow));
             } else {
-                throw new Error("There is a bug in the code right now");
+                continue;
             }
 
             if (distance < minDistance) {
@@ -80,9 +90,12 @@ public class Tester {
             }
         }
 
+        if (shortestMoves.isEmpty()) {
+            return new int[]{currentRow, currentCol};
+        }
         int randomIndex = (int) (Math.random() * shortestMoves.size());
         String chosenDirection = shortestMoves.get(randomIndex);
-        System.out.println("Selected: " + chosenDirection);
+//        System.out.println("Selected: " + chosenDirection);
 
         if (chosenDirection.equals("Up")) {
             currentRow -= 2;
@@ -92,11 +105,9 @@ public class Tester {
             currentCol+=2;
         } else if (chosenDirection.equals("Left")) {
             currentCol-=2;
-        } else {
-            throw new Error("There is a bug in the code right now");
         }
 
-        System.out.println("Checking in Here with Current row: " + currentRow + ". Current Col: " + currentCol);
+//        System.out.println("Checking in Here with Current row: " + currentRow + ". Current Col: " + currentCol);
         return new int[]{currentRow, currentCol};
     }
 
@@ -113,8 +124,8 @@ public class Tester {
             currentRow = tempArr[0];
             currentCol = tempArr[1];
             stepsTaken++;
-            if(stepsTaken >= 100) {
-                return 100;
+            if(stepsTaken >= maxSteps) {
+                return maxSteps;
             }
         }
         return stepsTaken;
@@ -137,13 +148,14 @@ public class Tester {
         }
         System.out.println();
     }
+
+    //    runTestVisualization is for debugging purposes, it shows one simulation
     public static void runTestVisualization(int targetRow, int targetCol, int numObstacles, int numRowIntersections, int numColIntersections) {
         System.out.println("This is the beginning of a new trial!");
         createNewGrid(numRowIntersections, numColIntersections);
         fillObstacles(numObstacles);
         targetRow = targetRow * 2 - 2;
         targetCol = targetCol * 2 - 2;
-//        grid[targetRow][targetCol] = true;
         printGrid();
         int currentRow = 0;
         int currentCol = 0;
@@ -160,24 +172,50 @@ public class Tester {
             System.out.println("New Current row: " + currentRow + ". New Current Col: " + currentCol);
             System.out.println();
             stepsTaken++;
-            if(stepsTaken >= 100) {
+            if(stepsTaken >= maxSteps) {
                 break;
             }
         }
         System.out.println("We made it with " + stepsTaken + "!");
     }
-    public static void main(String[] args) {
-        int desiredObstacleRange = 15;
-        ArrayList<Integer>[] arrayOfArrayLists = new ArrayList[desiredObstacleRange];
-        int numSimulations = 10_000;
-        int targetRow = 6;
-        int targetCol = 5;
-        int numRowIntersections = 6;
-        int numColIntersections = 5;
 
-        runTestVisualization(targetRow, targetCol, 15, numRowIntersections, numColIntersections);
-//        for (int numObstacles = 1; numObstacles <= desiredObstacleRange; numObstacles++) {
-//            arrayOfArrayLists[numObstacles] = runSimulation(numSimulations, targetRow, targetCol, numObstacles, numRowIntersections, numColIntersections);
-//        }
+    public static void getStatistics(ArrayList<Integer> arrayList) {
+        double mean;
+        double standardDeviation;
+        int minimum;
+        double q1;
+        double median;
+        double q3;
+        int maximum;
+
+        double sum = 0;
+        for (int i = 0; i < arrayList.size(); i++) {
+            sum += arrayList.get(i);
+        }
+        mean = sum / arrayList.size();
+        double residualSquared = 0;
+        for (int i = 0; i < arrayList.size(); i++) {
+            residualSquared += Math.pow(arrayList.get(i) - mean, 2);
+        }
+        standardDeviation = Math.sqrt(residualSquared / (arrayList.size() -1 ));
+        Collections.sort(arrayList);
+        minimum = arrayList.get(0);
+        maximum = arrayList.get(arrayList.size()-1);
+        int middleIndex = arrayList.size() / 2;
+        if (arrayList.size() % 2 == 0) {
+            median = (arrayList.get(middleIndex) + arrayList.get(middleIndex + 1)) / 2.0;
+        } else {
+            median = (arrayList.get(middleIndex));
+        }
+
+    }
+
+    //    Trying to test how to merge branches into the main branch.
+    public static void main(String[] args) {
+        ArrayList<Integer>[] arrayOfArrayLists = new ArrayList[desiredObstacleRange];
+//        runTestVisualization(targetRow, targetCol, 15, numRowIntersections, numColIntersections);
+        for (int numObstacles = 1; numObstacles <= desiredObstacleRange; numObstacles++) {
+            arrayOfArrayLists[numObstacles-1] = runSimulation(numSimulations, targetRow, targetCol, numObstacles, numRowIntersections, numColIntersections);
+        }
     }
 }
