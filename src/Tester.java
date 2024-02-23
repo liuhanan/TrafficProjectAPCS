@@ -234,7 +234,6 @@ public class Tester {
         System.out.println("The maximum is " + maximum);
     }
 
-//    Trying to test how to merge branches into the main branch.
     public static void main(String[] args) {
         ArrayList<Integer>[] arrayOfArrayLists = new ArrayList[desiredObstacleRange];
 //        runTestVisualization(targetRow, targetCol, 15, numRowIntersections, numColIntersections);
