@@ -8,16 +8,14 @@ public class Tester_Liu {
 
     static char[][] grid;
     final int numTrials = 1_000;
-
     static final int xExit = 4;
-
     static final int numRows = 5;
     static final int numCols = 6;
     static final int yExit = 6;
-
-    static int xPosition;
-
-    static int yPosition;
+    static int currentRow = 0;
+    static int currentCol = 0;
+    static int targetRow = 6;
+    static int targetCol = 5;
 
 
     public static void initializeGrid() {
@@ -76,7 +74,7 @@ public class Tester_Liu {
         }
     }
 
-    public static int[] pickNextDirection(int currentRow, int currentCol, int targetRow, int targetCol) {
+    public static int[] pickNextDirection() {//int currentRow, int currentCol, int targetRow, int targetCol) {
         ArrayList<String> possibleMovesList = new ArrayList<>();
         possibleMovesList.add("Up");
         possibleMovesList.add("Down");
@@ -85,18 +83,20 @@ public class Tester_Liu {
 //        Checking Boundaries and Obstacles
         if(currentRow == 0  || grid[currentRow-1][currentCol] == 'X') {
             possibleMovesList.remove("Up");
-            System.out.println("Removed up");
-        } else if (currentRow == grid.length-1 || grid[currentRow+1][currentCol] == 'X') {
+//            System.out.println("Removed up");
+        }
+        if (currentRow == grid.length-1 || grid[currentRow+1][currentCol] == 'X') {
             possibleMovesList.remove("Down");
-            System.out.println("Removed Down");
+//            System.out.println("Removed Down");
         }
 
         if(currentCol == 0 || grid[currentRow][currentCol-1] == 'X') {
             possibleMovesList.remove("Left");
-            System.out.println("Removed Left");
-        } else if (currentCol == grid[0].length -1 || grid[currentRow][currentCol+1] == 'X') {
+//            System.out.println("Removed Left");
+        }
+        if (currentCol == grid[0].length -1 || grid[currentRow][currentCol+1] == 'X') {
             possibleMovesList.remove("Right");
-            System.out.println("Removed Right");
+//            System.out.println("Removed Right");
         }
 
         int minDistance = Integer.MAX_VALUE;
@@ -113,7 +113,7 @@ public class Tester_Liu {
             } else if (direction.equals("Left")) {
                 distance = Math.abs(targetCol-(currentCol-2)) + Math.abs(targetRow - (currentRow));
             } else {
-                throw new Error("There is a bug in the code right now");
+                continue;
             }
 
             if (distance < minDistance) {
@@ -125,23 +125,21 @@ public class Tester_Liu {
             }
         }
 
+        if (shortestMoves.isEmpty()) {
+            return new int[]{currentRow, currentCol};
+        }
         int randomIndex = (int) (Math.random() * shortestMoves.size());
         String chosenDirection = shortestMoves.get(randomIndex);
-        System.out.println("Selected: " + chosenDirection);
+//        System.out.println("Selected: " + chosenDirection);
 
-        if (chosenDirection.equals("Up")) {
-            currentRow -= 2;
-        } else if(chosenDirection.equals("Down")) {
-            currentRow += 2;
-        } else if(chosenDirection.equals("Right")) {
-            currentCol+=2;
-        } else if (chosenDirection.equals("Left")) {
-            currentCol-=2;
-        } else {
-            throw new Error("There is a bug in the code right now");
+        switch (chosenDirection) {
+            case "Up" -> currentRow -= 2;
+            case "Down" -> currentRow += 2;
+            case "Right" -> currentCol += 2;
+            case "Left" -> currentCol -= 2;
         }
 
-        System.out.println("Checking in Here with Current row: " + currentRow + ". Current Col: " + currentCol);
+//        System.out.println("Checking in Here with Current row: " + currentRow + ". Current Col: " + currentCol);
         return new int[]{currentRow, currentCol};
     }
 
@@ -157,9 +155,6 @@ public class Tester_Liu {
         initializeGrid();
         printGrid();
         fillObstacles(10);
+        System.out.println(Arrays.toString(pickNextDirection()));
     }
-
-
-
-
 }
