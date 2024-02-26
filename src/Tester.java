@@ -1,5 +1,5 @@
 // Connor Leyden and Andrew Liu
-// due 02212024 TUE
+// due 02272024 TUE
 // Purpose: Project 2B class to execute program
 
 import java.util.ArrayList;
@@ -121,7 +121,7 @@ public class Tester {
         int currentRow = 0;
         int currentCol = 0;
         int stepsTaken = 0;
-        while (currentRow != targetRow && currentCol != targetCol) {
+        while (!(currentRow == targetRow) || !(currentCol == targetCol)) {
             int[] tempArr = pickNextDirection(currentRow, currentCol, targetRow, targetCol);
             currentRow = tempArr[0];
             currentCol = tempArr[1];
@@ -129,6 +129,7 @@ public class Tester {
             if(stepsTaken >= maxSteps) {
                 return maxSteps;
             }
+
         }
         return stepsTaken;
     }
@@ -137,6 +138,7 @@ public class Tester {
         for (int i = 0; i < numSimulations; i++) {
             stepsArray.add(runOneSimulation(targetRow, targetCol, numObstacles, numRowIntersections, numColIntersections));
         }
+        System.out.println(stepsArray);
         return stepsArray;
     }
 
@@ -149,6 +151,27 @@ public class Tester {
             System.out.println();
         }
         System.out.println();
+
+//        for (int i = 1; i < grid.length; i+=2) {
+//            for (int j = 1; j < grid[0].length; j+=2) {
+//                grid[i][j] = '☐';
+//            }
+//        }
+//        for (int i = 1; i < grid.length; i+=2) {
+//            for (int j = 0; j < grid[0].length; j+=2) {
+//                grid[i][j] = '|';
+//            }
+//        }
+//        for (int i = 0; i < grid.length; i+=2) {
+//            for (int j = 1; j < grid[0].length; j+=2) {
+//                grid[i][j] = '—';
+//            }
+//        }
+//        for (int i = 0; i < grid.length; i+=2) {
+//            for (int j = 0; j < grid[0].length; j+=2) {
+//                grid[i][j] = '*';
+//            }
+//        }
     }
 
 //    runTestVisualization is for debugging purposes, it shows one simulation
@@ -235,15 +258,15 @@ public class Tester {
     }
 
     public static void main(String[] args) {
-        ArrayList<Integer>[] arrayOfArrayLists = new ArrayList[desiredObstacleRange];
-//        runTestVisualization(targetRow, targetCol, 15, numRowIntersections, numColIntersections);
-        for (int numObstacles = 1; numObstacles <= desiredObstacleRange; numObstacles++) {
-            arrayOfArrayLists[numObstacles-1] = runSimulation(numSimulations, targetRow, targetCol, numObstacles, numRowIntersections, numColIntersections);
+        ArrayList<Integer>[] arrayOfArrayLists = new ArrayList[desiredObstacleRange+1];
+        runTestVisualization(targetRow, targetCol, 15, numRowIntersections, numColIntersections);
+        for (int numObstacles = 0; numObstacles <= desiredObstacleRange; numObstacles++) {
+            arrayOfArrayLists[numObstacles] = runSimulation(numSimulations, targetRow, targetCol, numObstacles, numRowIntersections, numColIntersections);
             System.out.println("=================================");
             System.out.println();
             System.out.println("The statistics for " + numObstacles + " are:");
             System.out.println("----------------------------------");
-            getStatistics(arrayOfArrayLists[numObstacles-1]);
+            getStatistics(arrayOfArrayLists[numObstacles]);
         }
     }
 }
